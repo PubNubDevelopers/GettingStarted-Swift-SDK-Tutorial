@@ -1,0 +1,23 @@
+{
+  "pins" : [
+    {
+      "identity" : "swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/pubnub/swift.git",
+      "state" : {
+        "revision" : "b23b685d77f16910184bc28a7c50cd20ecd792bb",
+        "version" : "6.0.0"
+      }
+    },
+    {
+      "identity" : "swiftui-wrapping-stack",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/diniska/swiftui-wrapping-stack",
+      "state" : {
+        "revision" : "530e1d24155bc272af461da4cc1ed25ecce9e3ab",
+        "version" : "1.0.1"
+      }
+    }
+  ],
+  "version" : 2
+}

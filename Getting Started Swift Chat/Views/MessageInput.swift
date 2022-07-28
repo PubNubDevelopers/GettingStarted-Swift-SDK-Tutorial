@@ -24,13 +24,13 @@ struct MessageInput: View {
                 }
                 
                 //  Publish message to PubNub using the pre-defined channel for this group chat
-                //  Attach our device Id as meta info to the message, this is used later when
-                //  calling the history API to know who sent each message.
+                //  Attach our device Id as meta info to the message, this is used by other platforms
+                //  if the history API does not return the UUID
                 viewModel.pubnub?.publish(
                     channel: viewModel.channel ?? "default_channel",
                     message: messageText,
                     shouldStore: true,
-                    meta: ["deviceID", viewModel.deviceId ?? "defaultId"]
+                    meta: ["deviceId", viewModel.deviceId ?? "defaultId"]
                 ) { result in
                     switch result {
                     case .success(_):

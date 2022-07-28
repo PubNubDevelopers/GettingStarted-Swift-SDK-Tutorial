@@ -7,6 +7,7 @@
 
 import Foundation
 
+//  Represents a messages, used in the viewModel to display messages
 struct Message: Hashable {
     var message: String = ""
     var senderDeviceId: String = ""

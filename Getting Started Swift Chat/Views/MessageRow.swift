@@ -23,19 +23,16 @@ struct MessageRow: View {
             Spacer()
         }
     }
-    
 }
 
 
-/*
 struct MessageRow_Previews: PreviewProvider {
     static var previews: some View {
-        Group {
-            MessageRow(message: messages[0])
-            MessageRow(message: messages[1])
-        }
-        .previewLayout(.fixed(width: 300, height: 70))
-
+        let viewModel = ChatViewModel()
+        let message = Message(message: "Test Message", senderDeviceId: "Simulator 1", timetoken: "16590086742278148", humanReadableTime: "Jul 28, 2022 at 12:44:34 PM")
+        MessageRow(message: message, viewModel: viewModel)
+            .previewLayout(.fixed(width: 300, height: 70))
+        
     }
 }
-*/
+

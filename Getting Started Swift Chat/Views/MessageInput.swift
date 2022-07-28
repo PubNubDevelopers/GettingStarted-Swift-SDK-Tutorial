@@ -11,7 +11,7 @@ struct MessageInput: View {
     @ObservedObject var viewModel: ChatViewModel
     @State private var messageText: String = ""
     @FocusState private var messageIsFocused: Bool
-
+    
     var body: some View {
         HStack {
             TextField("Message", text: $messageText).focused($messageIsFocused).disableAutocorrection(true)
@@ -23,8 +23,9 @@ struct MessageInput: View {
                     return;
                 }
                 
-                //  Publish message to PubNub
-                
+                //  Publish message to PubNub using the pre-defined channel for this group chat
+                //  Attach our device Id as meta info to the message, this is used later when
+                //  calling the history API to know who sent each message.
                 viewModel.pubnub?.publish(
                     channel: viewModel.channel ?? "default_channel",
                     message: messageText,
@@ -39,19 +40,16 @@ struct MessageInput: View {
                         print("publish failed: \(error.localizedDescription)")
                     }
                 }
-                
                 messageText = ""
-
             }
-            
-        }
+        }.padding()
     }
 }
 
-/*
 struct MessageInput_Previews: PreviewProvider {
     static var previews: some View {
-        MessageInput()
+        let viewModel = ChatViewModel()
+        MessageInput(viewModel: viewModel)
     }
 }
- */
+

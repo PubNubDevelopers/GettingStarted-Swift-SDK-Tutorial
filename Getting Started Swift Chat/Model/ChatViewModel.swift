@@ -8,6 +8,8 @@
 import Foundation
 import PubNub
 
+//  Viewmodel for the chat view (i.e. the whole application).
+//  Also holds application state, e.g the PubNub object
 class ChatViewModel: ObservableObject {
     @Published var messages: Array<Message> = Array()
     @Published var heading: String = "Group Chat"

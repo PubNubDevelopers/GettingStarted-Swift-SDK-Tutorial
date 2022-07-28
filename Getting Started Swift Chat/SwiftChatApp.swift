@@ -14,5 +14,4 @@ struct SwiftChatApp: App {
             ContentView()
         }
     }
-    
 }

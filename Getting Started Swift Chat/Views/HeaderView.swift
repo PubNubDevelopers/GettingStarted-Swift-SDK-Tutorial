@@ -27,7 +27,7 @@ struct Header: View {
                     .fontWeight(.bold)
                     .foregroundColor(Color.white)
                 
-                Text("Members: ")
+                Text("Members Online: ")
                     .fontWeight(.bold)
                     .foregroundColor(Color.white)
                 

@@ -275,9 +275,9 @@ struct ContentView: View {
         )
         
         //  Application state
+        viewModel.pubnub = PubNub(configuration: config)
         viewModel.deviceId = deviceId
         viewModel.channel = groupChatChannel
-        viewModel.pubnub = PubNub(configuration: config)
         viewModel.friendlyName = deviceId
         
     }

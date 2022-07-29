@@ -122,6 +122,7 @@ struct ContentView: View {
                                     let secsSince1970: Double = historicalMessage.published.timetokenDate.timeIntervalSince1970
                                     newMsg.humanReadableTime = dateFormatter.string(from: Date(timeIntervalSince1970: secsSince1970))
                                     viewModel.messages.append(newMsg)
+                                    addMember(deviceId: newMsg.senderDeviceId)
                                 }
                             }
                         case let .failure(error):

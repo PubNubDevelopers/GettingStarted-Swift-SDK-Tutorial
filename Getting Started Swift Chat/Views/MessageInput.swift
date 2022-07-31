@@ -23,20 +23,8 @@ struct MessageInput: View {
                     return;
                 }
                 
-                //  Publish message to PubNub using the pre-defined channel for this group chat
-                viewModel.pubnub?.publish(
-                    channel: viewModel.channel ?? "default_channel",
-                    message: messageText,
-                    shouldStore: true
-                ) { result in
-                    switch result {
-                    case .success(_):
-                        //  Message successfully sent
-                        break;
-                    case let .failure(error):
-                        print("publish failed: \(error.localizedDescription)")
-                    }
-                }
+                //  TUTORIAL: STEP 2C CODE GOES HERE
+                
                 messageText = ""
             }
         }.padding()

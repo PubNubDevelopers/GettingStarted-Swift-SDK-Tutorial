@@ -66,21 +66,8 @@ struct Header: View {
                                 viewModel.friendlyName = "default"
                             }
                             
-                            //  Mapping of device ID to friendly name.  Master record is PubNub
-                            //  object storage
-                            //  See: https://www.pubnub.com/docs/sdks/swift/api-reference/objects
-                            let uuidMetaData = PubNubUUIDMetadataBase(
-                                metadataId: viewModel.deviceId ?? "defaultValue",
-                                name: viewModel.friendlyName
-                            )
-                            viewModel.pubnub?.set(uuid: uuidMetaData) { result in
-                                switch result {
-                                case .success(_):
-                                    print("Metadata successfully set")
-                                case let .failure(error):
-                                    print("Create UUID meta data failed with error: \(error)")
-                                }
-                            }
+                            //  TUTORIAL: STEP 2H CODE GOES HERE
+                            
                         }
                     }.padding(3).background(RoundedRectangle(cornerRadius: 8).fill(Color.white))
                 }

@@ -57,29 +57,19 @@ struct ContentView: View {
     
     func applicationBroughtToForeground(viewModel: ChatViewModel)
     {
-        //  Subscribe
-        viewModel.pubnub?.subscribe(to: [groupChatChannel], withPresence: true)
+        //  TUTORIAL: STEP 2B CODE GOES HERE (1/2)
         
-        //  Applications receive various types of information from PubNub through a 'listener'
-        //  This application dynamically registers an listener when it is in the foreground
+        //  TUTORIAL: STEP 2D CODE IS ALREADY PRESENT HERE AS CONTAINS GLUE CODE
+        
         viewModel.listener = SubscriptionListener()
         viewModel.listener?.didReceiveSubscription = {
             event in
             switch event {
             case let .messageReceived(message):
+
+                //  TUTORIAL: STEP 2E CODE GOES HERE
                 
-                let messageText: String = message.payload.stringOptional ?? ""
-                let sender: String = message.publisher ?? ""
-                
-                var newMsg = Message(message: messageText, senderDeviceId: sender, timetoken: String(message.published))
-                let dateFormatter = DateFormatter()
-                dateFormatter.timeStyle = DateFormatter.Style.medium
-                dateFormatter.dateStyle = DateFormatter.Style.medium
-                dateFormatter.timeZone = .current
-                let secsSince1970: Double = message.published.timetokenDate.timeIntervalSince1970
-                newMsg.humanReadableTime = dateFormatter.string(from: Date(timeIntervalSince1970: secsSince1970))
-                
-                viewModel.messages.append(newMsg)
+                break;
                 
                 //  Status events are commonly used to notify the application that a previous PubNub call has succeeded
                 //  Not all PubNub calls return their status in this manner but is used in this app to ensure
@@ -101,35 +91,8 @@ struct ContentView: View {
                             }
                         }
                     
-                    //  When the application is first loaded, it is common to load any recent chat messages
-                    //  so the user can get caught up with conversations they missed.
-                    //  Every application will handle this differently but here we just load the most recent
-                    //  messages
-                    viewModel.pubnub?.fetchMessageHistory(for: [groupChatChannel], includeMeta: true, includeUUID: true, page: PubNubBoundedPageBase(limit: 8)) { result in
-                        switch result {
-                        case let .success(response):
-                            if let myChannelMessages = response.messagesByChannel[groupChatChannel] {
-                                myChannelMessages.forEach { historicalMessage in
-                                    //  Recreate the message and add it to the viewModel for display.
-                                    var newMsg = Message()
-                                    newMsg.message = historicalMessage.payload.stringOptional ?? "Not found"
-                                    newMsg.senderDeviceId = historicalMessage.publisher?.stringOptional ?? "Unknown"
-                                    newMsg.timetoken = String(historicalMessage.published)
-                                    let dateFormatter = DateFormatter()
-                                    dateFormatter.timeStyle = DateFormatter.Style.medium
-                                    dateFormatter.dateStyle = DateFormatter.Style.medium
-                                    dateFormatter.timeZone = .current
-                                    let secsSince1970: Double = historicalMessage.published.timetokenDate.timeIntervalSince1970
-                                    newMsg.humanReadableTime = dateFormatter.string(from: Date(timeIntervalSince1970: secsSince1970))
-                                    viewModel.messages.append(newMsg)
-                                    
-                                    lookupMemberName(deviceId: newMsg.senderDeviceId)
-                                }
-                            }
-                        case let .failure(error):
-                            print("Failed to retrieve history: \(error.localizedDescription)")
-                        }
-                    }
+                    //  TUTORIAL: STEP 2G CODE GOES HERE
+                    
                 }
                 
                 //  Be notified that a 'presence' event has occurred.  I.e. somebody has left or joined
@@ -137,33 +100,9 @@ struct ContentView: View {
                 //  invoked when presence information changes, meaning you do NOT have to call hereNow
                 //  periodically.  More info: https://www.pubnub.com/docs/sdks/swift/api-reference/presence
             case let .presenceChanged(presence):
-                //  A note about ANNOUNCE_MAX:
-                //  There is a server setting, ANNOUNCE_MAX, that you can configure on your keyset.  This
-                //  defaults to 20 users and after this number of attendees join each channel, presence
-                //  events are only sent periodically every x seconds, where x is also configured on the keyset.
-                //  More info: https://www.pubnub.com/docs/presence/presence-events#interval-mode
-                //  Since this application needs to know which UUIDs have joined or left since the last update,
-                //  YOU NEED TO SET 'Presence Deltas' to true on the keyset, if you have more than ANNOUNCE_MAX
-                //  users, using this app.
-                for action in presence.actions {
-                    switch action {
-                    case let .join(uuids):
-                        uuids.forEach { deviceId in
-                            addMember(deviceId: deviceId)
-                        }
-                        break;
-                    case let .leave(uuids):
-                        uuids.forEach { deviceId in
-                            removeMember(deviceId: deviceId)
-                        }
-                        break;
-                    case .timeout(_):
-                        print("Presence - timeout")
-                        break;
-                    case let .stateChange(uuid, state):
-                        print("\(uuid) changed their presence state to \(state) at \(presence.timetoken)")
-                    }
-                }
+                
+                //  TUTORIAL: STEP 2F CODE GOES HERE (1/2)
+                break;
             case let .subscribeError(error):
                 print("Subscription Error \(error)")
             default:
@@ -185,19 +124,9 @@ struct ContentView: View {
         viewModel.objectsListener?.didReceiveObjectMetadataEvent = { event in
             switch event {
             case .setUUID(let metadata):
-                let changedId: String = metadata.metadataId;
-                for change in metadata.changes {
-                    switch change {
-                    case let .stringOptional(_, value):
-                        let changedValue: String = value?.stringOptional ?? changedId
-                        replaceMemberName (
-                            deviceId: changedId, newName: changedValue
-                        )
-                    case .customOptional(_, _):
-                        //  No action
-                        break;
-                    }
-                }
+
+                //  TUTORIAL: STEP 2I CODE GOES HERE (2/2)
+                
                 break;
             default:
                 break
@@ -216,24 +145,7 @@ struct ContentView: View {
         //  I am definitely here(!)
         addMember(deviceId: viewModel.deviceId ?? "defaultId")
         
-        //  PubNub has an API to determine who is in the room.  Use this call sparingly since
-        //  you are only ever likely to need to know EVERYONE in the room when the UI is first
-        // created.
-        viewModel.pubnub?.hereNow(on: [groupChatChannel], includeUUIDs: true) {result in
-            switch result {
-            case let .success(presenceByChannel):
-                if let myChannelPresence = presenceByChannel[groupChatChannel] {
-                    //  The API will return an array of occupants in the channel, defined by
-                    //  their ID.  This application will need to look up the friendly name
-                    //  defined for each of these IDs (later)
-                    myChannelPresence.occupants.forEach { member in
-                        addMember(deviceId: member)
-                    }
-                }
-            case let .failure(error):
-                print("Failed hereNow Response: \(error)")
-            }
-        }
+        //  TUTORIAL: STEP 2F CODE GOES HERE (2/2)
         
     }
     
@@ -243,7 +155,9 @@ struct ContentView: View {
         //  when the app goes into the background.  This is good to show the principles
         //  of presence but you don't need to do this in a production app if it
         //  does not fit your use case.
-        viewModel.pubnub?.unsubscribe(from: [groupChatChannel]);
+
+        //  TUTORIAL: STEP 2B CODE GOES HERE (2/2)
+        
         viewModel.listener?.cancel()
         viewModel.objectsListener?.cancel()
     }
@@ -263,20 +177,8 @@ struct ContentView: View {
             return;
         }
         
-        //  Create a device-specific DeviceId to represent this device and user, so PubNub
-        //  knows who is connecting.
-        //  More info: https://support.pubnub.com/hc/en-us/articles/360051496532-How-do-I-set-the-UUID-
-        //  All iOS IDs are user-resettable but are still appropriate for use here.
-        let deviceId = UIDevice.current.identifierForVendor?.uuidString ?? "defaultId"
+        //  TUTORIAL: STEP 2A CODE GOES HERE
         
-        //  Create a PubNub configuration and instantiate the PubNub object, used to
-        //  communicate with PubNub
-        let config = PubNubConfiguration (
-            publishKey: publish_key, subscribeKey: subscribe_key, userId: deviceId
-        )
-        
-        //  Application state
-        viewModel.pubnub = PubNub(configuration: config)
         viewModel.deviceId = deviceId
         viewModel.channel = groupChatChannel
         viewModel.friendlyName = deviceId
@@ -317,21 +219,9 @@ struct ContentView: View {
             //  We already know the member name, take no action
         }
         else{
-            //  Resolve the friendly name of the deviceId
-            viewModel.pubnub?.fetch(uuid: deviceId) { result in
-                switch result {
-                case let .success(uuidMetadata):
-                    //  Add the user's name to the memberNames dictionary (part of the viewModel, so
-                    //  the UI will update accordingly)
-                    viewModel.memberNames[deviceId] = uuidMetadata.name
-                    //  Set our own friendly name (stored separately to make the UI logic easier)
-                    if (deviceId == viewModel.deviceId) {
-                        viewModel.friendlyName = uuidMetadata.name ?? "default name"
-                    }
-                case .failure(_):
-                    print("Could not find friendly name for device: " + deviceId)
-                }
-            }
+
+            //  TUTORIAL: STEP 2I CODE GOES HERE (1/2)
+            
         }
     }
     

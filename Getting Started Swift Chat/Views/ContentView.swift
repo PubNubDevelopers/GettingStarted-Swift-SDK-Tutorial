@@ -106,6 +106,7 @@ struct ContentView: View {
                     //  Every application will handle this differently but here we just load the most recent
                     //  messages
                     viewModel.pubnub?.fetchMessageHistory(for: [groupChatChannel], includeMeta: true, includeUUID: true, page: PubNubBoundedPageBase(limit: 8)) { result in
+                        viewModel.messages.removeAll()
                         switch result {
                         case let .success(response):
                             if let myChannelMessages = response.messagesByChannel[groupChatChannel] {

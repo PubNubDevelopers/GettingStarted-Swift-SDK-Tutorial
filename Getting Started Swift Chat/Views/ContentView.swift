@@ -268,6 +268,9 @@ struct ContentView: View {
         //  knows who is connecting.
         //  More info: https://support.pubnub.com/hc/en-us/articles/360051496532-How-do-I-set-the-UUID-
         //  All iOS IDs are user-resettable but are still appropriate for use here.
+        //  Setting the device ID to a random value will have a significant impact on your MAU
+        //  (monthly active user) count and can therefore significantly impact your bill if you
+        //  are using PubNub's MAU pricing model.
         let deviceId = UIDevice.current.identifierForVendor?.uuidString ?? "defaultId"
         
         //  Create a PubNub configuration and instantiate the PubNub object, used to

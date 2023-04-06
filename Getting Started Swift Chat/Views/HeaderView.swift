@@ -67,7 +67,7 @@ struct Header: View {
                             }
                             
                             //  Mapping of device ID to friendly name.  Master record is PubNub
-                            //  object storage
+                            //  App Context storage
                             //  See: https://www.pubnub.com/docs/sdks/swift/api-reference/objects
                             let uuidMetaData = PubNubUUIDMetadataBase(
                                 metadataId: viewModel.deviceId ?? "defaultValue",

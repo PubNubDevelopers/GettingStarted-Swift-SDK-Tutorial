@@ -87,8 +87,8 @@ struct ContentView: View {
             case let .connectionStatusChanged(status):
                 if (status == ConnectionStatus.connected)
                 {
-                    //  In order to receive object UUID events (didReceiveObjectMetaDataEvent) it is
-                    //  required to set our membership using the Object API.
+                    //  In order to receive App Context UUID events (didReceiveObjectMetaDataEvent) it is
+                    //  required to set our membership using the App Context API.
                     let newMembership = PubNubMembershipMetadataBase(uuidMetadataId: viewModel.deviceId ?? "defaultId", channelMetadataId: groupChatChannel)
                     viewModel.pubnub?.setMemberships(
                         uuid: viewModel.deviceId,
@@ -179,7 +179,7 @@ struct ContentView: View {
             viewModel.pubnub?.add(viewModel.listener!)
         }
         
-        //  Whenever Object meta data is changed, an Object event is received.
+        //  Whenever App Context meta data is changed, an App Context event is received.
         //  See: https://www.pubnub.com/docs/chat/sdks/users/setup
         //  Use this to be notified when other users change their friendly names
         viewModel.objectsListener = SubscriptionListener()
